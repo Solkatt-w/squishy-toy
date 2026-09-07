@@ -1,0 +1,22 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+*~
+
+# Build artifacts
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+
+# WorkBuddy workspace artifacts (internal memory, not part of the project)
+.workbuddy/
+
+# Personal resume / project experience (private, not for public repo)
+简历*.md
+*简历*

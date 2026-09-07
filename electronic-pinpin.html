@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<title>电子捏捏乐 · 8款解压小物</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#fafaf7;color:#1a1a1a;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:680px;margin:0 auto;padding:16px 12px 40px}
+  .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .hd h1{font-size:18px;font-weight:500;color:#1a1a1a}
+  .hd .sub{font-size:12px;color:#999}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+  .card{background:#ffffff;border:0.5px solid #e5e3da;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s ease}
+  .card:hover{border-color:#b4b2a9;transform:translateY(-1px)}
+  .card.act{border:1.5px solid #378add;background:#e6f1fb}
+  .ico{width:38px;height:38px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center}
+  .nm{font-size:12px;color:#1a1a1a;font-weight:500}
+  .dsc{font-size:11px;color:#999;margin-top:2px;line-height:1.2}
+  .stage{position:relative;height:300px;background:#f1efe8;border-radius:14px;border:0.5px solid #e5e3da;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:14px;user-select:none}
+  .obj{transition:transform .12s cubic-bezier(.34,1.56,.64,1);cursor:pointer;touch-action:none;display:flex;align-items:center;justify-content:center}
+  .obj.squish{transform:scale(var(--sx,.92),var(--sy,1.08))}
+  .ctrls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;padding:14px;background:#f1efe8;border-radius:10px}
+  .ctrl label{font-size:12px;color:#5f5e5a;display:flex;justify-content:space-between;margin-bottom:6px}
+  .ctrl label span{color:#1a1a1a;font-weight:500}
+  .ctrl input[type=range]{width:100%;accent-color:#378add}
+  .btns{display:flex;gap:8px;margin-bottom:14px}
+  .btn{flex:1;padding:10px;border:0.5px solid #b4b2a9;background:#ffffff;border-radius:10px;font-size:13px;cursor:pointer;color:#1a1a1a;font-family:inherit;transition:background .15s}
+  .btn:hover{background:#f1efe8}
+  .btn.pri{background:#1a1a1a;color:#ffffff;border-color:#1a1a1a}
+  .btn.pri:hover{background:#2c2c2a}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px;background:#f1efe8;border-radius:10px}
+  .st{text-align:center}
+  .st .v{font-size:20px;font-weight:500;color:#1a1a1a;line-height:1.2;font-variant-numeric:tabular-nums}
+  .st .l{font-size:11px;color:#999;margin-top:2px}
+  .ripple{position:absolute;border-radius:50%;background:#e6f1fb;pointer-events:none;opacity:.6;animation:rip .6s ease-out forwards}
+  @keyframes rip{to{transform:scale(3.5);opacity:0}}
+  .float{position:absolute;font-size:12px;font-weight:500;color:#1a1a1a;pointer-events:none;animation:fl 1s ease-out forwards;background:#ffffff;padding:3px 10px;border-radius:12px;border:0.5px solid #e5e3da;box-shadow:0 2px 6px rgba(0,0,0,.05);font-variant-numeric:tabular-nums}
+  @keyframes fl{to{transform:translateY(-44px);opacity:0}}
+  .tac{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);padding:5px 14px;background:#ffffff;border-radius:14px;border:0.5px solid #e5e3da;font-size:12px;color:#5f5e5a;opacity:0;transition:opacity .2s;white-space:nowrap}
+  .tac.show{opacity:1}
+  .tag{position:absolute;top:10px;left:10px;font-size:11px;padding:3px 8px;background:#ffffff;border:0.5px solid #e5e3da;border-radius:10px;color:#5f5e5a}
+  .auto-ind{position:absolute;top:10px;right:10px;font-size:11px;padding:3px 8px;background:#e6f1fb;color:#185fa5;border-radius:10px;opacity:0;transition:opacity .2s}
+  .auto-ind.show{opacity:1}
+  .hint{font-size:11px;color:#999;text-align:center;margin-top:10px;line-height:1.6}
+  .footer{margin-top:24px;text-align:center;font-size:11px;color:#b4b2a9}
+  @media (max-width:420px){
+    .grid{grid-template-columns:repeat(4,1fr);gap:6px}
+    .card{padding:8px 4px}
+    .nm{font-size:11px}
+    .dsc{display:none}
+    .stage{height:260px}
+  }
+</style>
+</head>
+<body>
+<h1 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">电子捏捏乐游戏：8种解压物品，支持硬度与大小调节、触感与音效反馈</h1>
+
+<div class="wrap">
+  <div class="hd">
+    <h1>电子捏捏乐 · 8款解压小物</h1>
+    <span class="sub">点击/长按 = 真实触感</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="stage" id="stage">
+    <span class="tag" id="tag">硬度 · 中等</span>
+    <span class="auto-ind" id="autoInd">自动捏捏中</span>
+    <div class="obj" id="obj"></div>
+    <div class="tac" id="tac"></div>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl">
+      <label>硬度 <span id="hVal">5</span>/10</label>
+      <input type="range" min="1" max="10" value="5" id="hard">
+    </div>
+    <div class="ctrl">
+      <label>大小 <span id="sVal">120</span>px</label>
+      <input type="range" min="60" max="180" value="120" id="size">
+    </div>
+  </div>
+
+  <div class="btns">
+    <button class="btn" id="reset">重置</button>
+    <button class="btn pri" id="auto">自动捏捏</button>
+  </div>
+
+  <div class="stats">
+    <div class="st"><div class="v" id="cnt">0</div><div class="l">捏捏次数</div></div>
+    <div class="st"><div class="v" id="str">0</div><div class="l">压力指数</div></div>
+    <div class="st"><div class="v" id="max">0</div><div class="l">峰值压力</div></div>
+    <div class="st"><div class="v" id="lvl">1</div><div class="l">解压等级</div></div>
+  </div>
+  <p class="hint">长按物品连续捏捏 · 移动设备会触发震动<br>不同物品、硬度组合将带来完全不同的体验</p>
+  <p class="footer">— 解压一下，放松一下 —</p>
+</div>
+
+<script>
+const ITEMS=[
+  {id:'jelly',name:'果冻',desc:'Q弹爽滑',c:'#ED93B1',visual:'jelly',pitch:520,wave:'sine'},
+  {id:'plush',name:'毛绒',desc:'柔软蓬松',c:'#7F77DD',visual:'plush',pitch:280,wave:'sine'},
+  {id:'slime',name:'史莱姆',desc:'黏腻Q弹',c:'#639922',visual:'slime',pitch:180,wave:'sine'},
+  {id:'sponge',name:'海绵',desc:'回弹适中',c:'#EF9F27',visual:'sponge',pitch:420,wave:'triangle'},
+  {id:'bubble',name:'气泡膜',desc:'咔哒脆响',c:'#378ADD',visual:'bubble',pitch:980,wave:'square'},
+  {id:'clay',name:'橡皮泥',desc:'塑形挤压',c:'#854F0B',visual:'clay',pitch:340,wave:'sine'},
+  {id:'ball',name:'解压球',desc:'韧性十足',c:'#A32D2D',visual:'ball',pitch:610,wave:'triangle'},
+  {id:'marsh',name:'棉花糖',desc:'绵软入口',c:'#D3D1C7',visual:'marsh',pitch:200,wave:'sine'}
+];
+
+const TACTILE={
+  jelly:['啵～','Q弹~','滑溜溜','颤颤巍巍','晃悠悠'],
+  plush:['软噗噗','暖茸茸','绵~陷','揉揉软软','噗叽'],
+  slime:['啾~','黏糊糊','滑腻腻','拉丝拉丝','咕唧'],
+  sponge:['噗~','弹性回弹','嘣~','嗤~','嘭'],
+  bubble:['啵啵啵','咔嚓！','噼啪','啵~','啪啪'],
+  clay:['咕叽','塑形中','压扁了','挤压','黏土塑'],
+  ball:['砰！','反弹！','韧性足','弹回','抗压'],
+  marsh:['绵绵软','入口即化','松软','云朵般','融化']
+};
+
+let curItem=ITEMS[0], hardness=5, sizePx=120;
+let count=0, stress=0, peak=0, level=1;
+let audioCtx=null, autoTimer=null, pressTimer=null;
+
+const $=id=>document.getElementById(id);
+const grid=$('grid'),stage=$('stage'),obj=$('obj'),tac=$('tac'),tag=$('tag'),autoInd=$('autoInd');
+
+function drawShape(item,sz){
+  if(item.visual==='jelly'){
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="55" rx="42" ry="38" fill="${item.c}"/>
+      <ellipse cx="38" cy="43" rx="10" ry="8" fill="rgba(255,255,255,.5)"/>
+      <ellipse cx="32" cy="42" rx="4" ry="3" fill="rgba(255,255,255,.75)"/>
+    </svg>`;
+  }
+  if(item.visual==='plush'){
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">
+      <circle cx="50" cy="55" r="38" fill="${item.c}"/>
+      <circle cx="36" cy="40" r="13" fill="${item.c}"/>
+      <circle cx="64" cy="40" r="13" fill="${item.c}"/>
+      <circle cx="50" cy="62" r="14" fill="${item.c}"/>
+      <circle cx="42" cy="48" r="3" fill="#2C2C2A"/>
+      <circle cx="58" cy="48" r="3" fill="#2C2C2A"/>
+      <ellipse cx="50" cy="58" rx="5" ry="3" fill="#2C2C2A"/>
+    </svg>`;
+  }
+  if(item.visual==='slime'){
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">
+      <path d="M20 55 Q15 30 35 45 T65 40 Q85 35 80 65 Q70 85 50 82 Q30 85 20 55 Z" fill="${item.c}"/>
+      <ellipse cx="38" cy="42" rx="8" ry="4" fill="rgba(255,255,255,.4)"/>
+    </svg>`;
+  }
+  if(item.visual==='sponge'){
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">
+      <rect x="15" y="15" width="70" height="70" rx="6" fill="${item.c}"/>
+      <circle cx="32" cy="32" r="4" fill="rgba(0,0,0,.15)"/>
+      <circle cx="55" cy="38" r="3" fill="rgba(0,0,0,.15)"/>
+      <circle cx="45" cy="55" r="5" fill="rgba(0,0,0,.15)"/>
+      <circle cx="68" cy="60" r="3" fill="rgba(0,0,0,.15)"/>
+      <circle cx="30" cy="58" r="3" fill="rgba(0,0,0,.15)"/>
+      <circle cx="60" cy="75" r="2" fill="rgba(0,0,0,.15)"/>
+      <circle cx="40" cy="75" r="2" fill="rgba(0,0,0,.15)"/>
+    </svg>`;
+  }
+  if(item.visual==='bubble'){
+    let bubbles='';
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+      const cx=22+i*18, cy=22+j*18;
+      bubbles+=`<circle cx="${cx}" cy="${cy}" r="7" fill="rgba(255,255,255,.8)" stroke="${item.c}" stroke-width="1"/>`;
+    }
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">${bubbles}</svg>`;
+  }
+  if(item.visual==='clay'){
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">
+      <path d="M30 38 Q20 50 30 65 Q50 80 70 65 Q80 50 70 38 Q50 25 30 38 Z" fill="${item.c}"/>
+      <ellipse cx="40" cy="45" rx="6" ry="3" fill="rgba(255,255,255,.3)"/>
+    </svg>`;
+  }
+  if(item.visual==='ball'){
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="40" fill="${item.c}"/>
+      <ellipse cx="40" cy="40" rx="9" ry="6" fill="rgba(255,255,255,.35)"/>
+      <path d="M30 65 Q50 75 70 65" stroke="rgba(0,0,0,.2)" stroke-width="1" fill="none"/>
+    </svg>`;
+  }
+  if(item.visual==='marsh'){
+    return `<svg width="${sz}" height="${sz}" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="50" rx="42" ry="38" fill="${item.c}"/>
+      <ellipse cx="40" cy="42" rx="10" ry="6" fill="rgba(255,255,255,.5)"/>
+      <ellipse cx="60" cy="55" rx="6" ry="3" fill="rgba(255,255,255,.3)"/>
+    </svg>`;
+  }
+  return '';
+}
+
+function buildGrid(){
+  grid.innerHTML=ITEMS.map(it=>{
+    const active=it.id===curItem.id;
+    return `<div class="card ${active?'act':''}" data-id="${it.id}">
+      <div class="ico">${drawShape(it,32)}</div>
+      <div class="nm">${it.name}</div>
+      <div class="dsc">${it.desc}</div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.card').forEach(c=>{
+    c.onclick=()=>{
+      curItem=ITEMS.find(i=>i.id===c.dataset.id);
+      buildGrid();render();
+      ping();
+    };
+  });
+}
+
+function render(){
+  obj.innerHTML=drawShape(curItem,sizePx);
+  obj.style.width=sizePx+'px';
+  obj.style.height=sizePx+'px';
+  const label=['极软','超软','较软','稍软','中等','稍硬','较硬','很硬','超硬','极硬'];
+  tag.textContent='硬度 · '+label[hardness-1];
+}
+
+function initAudio(){
+  if(!audioCtx){
+    try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
+  }
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+}
+
+function playSound(){
+  if(!audioCtx) return;
+  const now=audioCtx.currentTime;
+  const baseFreq=curItem.pitch;
+  const hk=hardness/10;
+  const dur=0.08+hk*0.18;
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.type=curItem.wave;
+  osc.frequency.setValueAtTime(baseFreq*(1+hk*0.6),now);
+  osc.frequency.exponentialRampToValueAtTime(baseFreq*0.7,now+dur);
+  gain.gain.setValueAtTime(0.0001,now);
+  gain.gain.exponentialRampToValueAtTime(0.18+hk*0.12,now+0.005);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+dur);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now+dur+0.05);
+  if(curItem.visual==='bubble'){
+    for(let i=0;i<3;i++){
+      const o=audioCtx.createOscillator();
+      const g=audioCtx.createGain();
+      o.type='square';
+      o.frequency.value=baseFreq*(1.5+i*0.3)*(1+hk*0.5);
+      g.gain.setValueAtTime(0.0001,now+0.02*i);
+      g.gain.exponentialRampToValueAtTime(0.08,now+0.02*i+0.003);
+      g.gain.exponentialRampToValueAtTime(0.0001,now+0.02*i+0.04);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(now+0.02*i);
+      o.stop(now+0.02*i+0.05);
+    }
+  }
+}
+
+function vibrate(dur){
+  if(navigator.vibrate) navigator.vibrate(dur);
+}
+
+function showTac(text){
+  tac.textContent=text;
+  tac.classList.add('show');
+  clearTimeout(showTac.t);
+  showTac.t=setTimeout(()=>tac.classList.remove('show'),600);
+}
+
+function spawnRipple(x,y){
+  const r=document.createElement('div');
+  r.className='ripple';
+  r.style.left=(x-15)+'px';
+  r.style.top=(y-15)+'px';
+  r.style.width='30px';
+  r.style.height='30px';
+  stage.appendChild(r);
+  setTimeout(()=>r.remove(),600);
+}
+
+function spawnFloat(x,y,text){
+  const f=document.createElement('div');
+  f.className='float';
+  f.textContent=text;
+  f.style.left=(x-15)+'px';
+  f.style.top=(y-15)+'px';
+  stage.appendChild(f);
+  setTimeout(()=>f.remove(),1000);
+}
+
+function updateStats(amount){
+  count++;
+  stress+=amount;
+  peak=Math.max(peak,amount);
+  level=Math.floor(count/20)+1;
+  $('cnt').textContent=count;
+  $('str').textContent=stress;
+  $('max').textContent=peak;
+  $('lvl').textContent=level;
+}
+
+function ping(x,y){
+  initAudio();
+  playSound();
+  const hk=hardness/10;
+  const sx=1-hk*0.35;
+  const sy=1+hk*0.45;
+  obj.style.setProperty('--sx',sx);
+  obj.style.setProperty('--sy',sy);
+  obj.classList.add('squish');
+  setTimeout(()=>obj.classList.remove('squish'),120);
+  const react=TACTILE[curItem.visual];
+  showTac(react[Math.floor(Math.random()*react.length)]);
+  vibrate(10+Math.floor(hk*30));
+  const amount=Math.ceil(5+hk*15);
+  if(typeof x==='number'){
+    spawnRipple(x,y);
+    spawnFloat(x,y-10,['+'+amount,'解压！','解压~','过瘾'][Math.floor(Math.random()*4)]);
+  }
+  updateStats(amount);
+}
+
+stage.addEventListener('click',e=>{
+  const r=stage.getBoundingClientRect();
+  ping(e.clientX-r.left,e.clientY-r.top);
+});
+
+function startPress(){
+  if(pressTimer) return;
+  pressTimer=setInterval(()=>{
+    const r=stage.getBoundingClientRect();
+    ping(r.width/2,r.height/2);
+  },130);
+}
+function endPress(){
+  if(pressTimer){clearInterval(pressTimer);pressTimer=null;}
+}
+obj.addEventListener('mousedown',startPress);
+obj.addEventListener('mouseup',endPress);
+obj.addEventListener('mouseleave',endPress);
+obj.addEventListener('touchstart',e=>{e.preventDefault();startPress();},{passive:false});
+obj.addEventListener('touchend',endPress);
+
+$('hard').oninput=e=>{hardness=+e.target.value;$('hVal').textContent=hardness;render();};
+$('size').oninput=e=>{sizePx=+e.target.value;$('sVal').textContent=sizePx;render();};
+$('reset').onclick=()=>{
+  count=0;stress=0;peak=0;level=1;
+  $('cnt').textContent=0;$('str').textContent=0;$('max').textContent=0;$('lvl').textContent=1;
+  showTac('已重置');
+};
+$('auto').onclick=()=>{
+  if(autoTimer){clearInterval(autoTimer);autoTimer=null;autoInd.classList.remove('show');showTac('已停止');}
+  else{
+    autoTimer=setInterval(()=>{
+      const r=stage.getBoundingClientRect();
+      ping(r.width/2+(Math.random()-0.5)*100,r.height/2+(Math.random()-0.5)*80);
+    },350);
+    autoInd.classList.add('show');
+    showTac('自动捏捏中~');
+  }
+};
+
+buildGrid();render();
+showTac('选个物品开捏吧');
+</script>
+</body>
+</html>
